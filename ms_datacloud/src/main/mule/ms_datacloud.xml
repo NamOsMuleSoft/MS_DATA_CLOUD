@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:sdc="http://www.mulesoft.org/schema/mule/sdc"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sdc http://www.mulesoft.org/schema/mule/sdc/current/mule-sdc.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sdc:sdc-config name="Salesforce_CDP_Sdc_config" doc:name="Salesforce CDP Sdc config" doc:id="ec293804-bef4-4cbf-9539-0d48968fb17e" >
+		<sdc:oauth-user-pass-connection clientId="3MVG9HB6vm3GZZR.q1uOA82CndhCu9eSfilqD6E4Rw.Z40mpNIgDMVa1keAZ1jKfEvkaxuzD0ymwBPvQl2zV3" clientSecret="4437706CE1C8858947098BBCDAD654107DBA90511F1CFABD711D0FDBE2DBA434" username="Campfire17@user.demo" password="SFDC1234" audienceUrl="https://login.salesforce.com" />
+	</sdc:sdc-config>
+	<flow name="ms_datacloudFlow" doc:id="82776024-f9f5-41a1-9819-2764a02aa80b" >
+		<scheduler doc:name="Scheduler" doc:id="23b3b9ee-c2aa-41f4-86e9-d1c19aff8f7c" >
+			<scheduling-strategy >
+				<fixed-frequency timeUnit="DAYS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<sdc:query doc:name="Query" doc:id="ea807507-557a-4057-89b3-38e7f3e87df3" config-ref="Salesforce_CDP_Sdc_config">
+			<sdc:query-body ><![CDATA[{
+    "sql": "select * from ssot__Individual__dlm limit 10"
+}]]></sdc:query-body>
+		</sdc:query>
+		<ee:transform doc:name="JAVA to JSON" doc:id="ed6f916e-ba2e-4649-af2c-c19265e2b945" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Query Result" doc:id="9e74f24a-fd26-4235-8475-bcf2d4fb9ba5" message="#[payload]"/>
+	</flow>
+</mule>
