@@ -1,0 +1,5 @@
+datacloud.clientId : "3MVG9HB6vm3GZZR.q1uOA82CndhCu9eSfilqD6E4Rw.Z40mpNIgDMVa1keAZ1jKfEvkaxuzD0ymwBPvQl2zV3"
+datacloud.clientSecret : "4437706CE1C8858947098BBCDAD654107DBA90511F1CFABD711D0FDBE2DBA434"
+datacloud.username : "Campfire17@user.demo"
+datacloud.password : "SFDC1234"
+datacloud.audienceUrl : "https://login.salesforce.com"
