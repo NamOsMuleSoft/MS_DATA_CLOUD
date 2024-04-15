@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="profil" format="json">
+      <types:shape format="weave" example="examples/oneProfil.json"><![CDATA[%dw 2.0
+
+type profil = {|
+  oneId: String, 
+  firstName: String, 
+  lastName: String, 
+  email: String, 
+  externalIds: Array<String>, 
+  birthDate: String, 
+  phone: String
+|} {"example": "{\\\"oneId\\\":\\\"1234\\\",\\\"firstName\\\":\\\"John\\\",\\\"lastName\\\":\\\"Doe\\\",\\\"email\\\":\\\"johndoe@yopmail.com\\\",\\\"externalIds\\\":[\\\"Example\\\"],\\\"birthDate\\\":\\\"1976-11-03\\\",\\\"phone\\\":\\\"0618183434\\\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+</types:mule>

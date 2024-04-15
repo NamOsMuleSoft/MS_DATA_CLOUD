@@ -4,8 +4,8 @@ http://www.mulesoft.org/schema/mule/sdc http://www.mulesoft.org/schema/mule/sdc/
     <http:listener-config name="sys_datacloud_profile-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
-    <apikit:config name="sys_datacloud_profile-config" api="resource::214d150f-32d8-4630-802d-1ddf4d537137:sys_datacloud_profile:1.0.0:raml:zip:sys_datacloud_profile.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-	<sdc:sdc-config name="Salesforce_CDP_Sdc_config" doc:name="Salesforce CDP Sdc config" doc:id="ca642f58-841e-4d76-ab4d-5e6f6b1713df" >
+    <apikit:config name="sys_datacloud_profile-config" api="resource::214d150f-32d8-4630-802d-1ddf4d537137:sys_datacloud_profile:1.0.1:raml:zip:sys_datacloud_profile.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <sdc:sdc-config name="Salesforce_CDP_Sdc_config" doc:name="Salesforce CDP Sdc config" doc:id="6929343b-0749-4641-ab25-3d1ba2c3c903" >
 		<sdc:oauth-user-pass-connection clientId="3MVG9HB6vm3GZZR.q1uOA82CndhCu9eSfilqD6E4Rw.Z40mpNIgDMVa1keAZ1jKfEvkaxuzD0ymwBPvQl2zV3" clientSecret="4437706CE1C8858947098BBCDAD654107DBA90511F1CFABD711D0FDBE2DBA434" username="Campfire17@user.demo" password="SFDC1234" audienceUrl="https://login.salesforce.com" />
 	</sdc:sdc-config>
 	<flow name="sys_datacloud_profile-main">
@@ -128,19 +128,35 @@ output application/json
         </error-handler>
     </flow>
     <flow name="get:\getProfile:sys_datacloud_profile-config">
-        <ee:transform doc:name="createQuery" doc:id="c321659a-772e-4ca1-ab95-5a76207ec7a3" >
+        <logger level="INFO" message="get:\getProfile:sys_datacloud_profile-config" />
+    </flow>
+    <flow name="get:\getProfilebyId:sys_datacloud_profile-config">
+        <ee:transform doc:name="Create SQL" doc:id="9156a7ab-7f32-4d79-8e50-6977f11084dc" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 {
-    "sql": "select * from ssot__Individual__dlm where ssot__Id__c = '" + attributes.queryParams.oneId +"'"
+	sql: "select * from MS_profile_API__cio  WHERE oneid__c = '" ++ attributes.queryParams.oneId ++ "'"
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<sdc:query doc:name="Query" doc:id="f31a2505-f877-4ba0-bb1a-4aa2e6fa4941" config-ref="Salesforce_CDP_Sdc_config">
-		</sdc:query>
-		<logger level="INFO" message="get:\getProfile:sys_datacloud_profile-config" />
+		<sdc:query doc:name="Query" doc:id="48b1ef5f-b4cb-4f2c-9cc6-de47625c4363" config-ref="Salesforce_CDP_Sdc_config"/>
+		<ee:transform doc:name="Transform Message" doc:id="05038cf8-9cda-4849-9c4c-477eeece9a35" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var curProfile = payload.data[0]
+---
+{
+	firstName: curProfile.firstname__c,
+	lastName:curProfile.lastname__c,
+	phone: "",
+	oneId: curProfile.oneid__c,
+	email: curProfile.email__c
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
     </flow>
     <flow name="get:\searchProfiles:sys_datacloud_profile-config">
         <logger level="INFO" message="get:\searchProfiles:sys_datacloud_profile-config" />
